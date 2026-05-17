@@ -5,7 +5,7 @@ import pandas as pd
 
 # NOTE: Replace with a valid token from https://upstox.com/.
 # An expired or invalid token will return a WebSocket 401 Unauthorized handshake error.
-access_token = "eyJ0eXAiOiJKV1QiLCJrZXlfaWQiOiJza192MS4wIiwiYWxnIjoiSFMyNTYifQ.eyJzdWIiOiI3NkI0VEYiLCJqdGkiOiI2OWViMDRlMzBhOWVkODBlMGI1ZDI1MTAiLCJpc011bHRpQ2xpZW50IjpmYWxzZSwiaXNQbHVzUGxhbiI6dHJ1ZSwiaWF0IjoxNzc3MDA5ODkxLCJpc3MiOiJ1ZGFwaS1nYXRld2F5LXNlcnZpY2UiLCJleHAiOjE3NzcwNjgwMDB9.Abd1QJAPQ6GIdHO_m1Bfq25q0-ZAZtdK8TEftiLj9_c"
+access_token = "eyJ0eXAiOiJKV1QiLCJrZXlfaWQiOiJza192MS4wIiwiYWxnIjoiSFMyNTYifQ.eyJzdWIiOiI3NkI0VEYiLCJqdGkiOiI2YTA5OWJjNTY5YjlkYzU5MDk1ODg1Y2MiLCJpc011bHRpQ2xpZW50IjpmYWxzZSwiaXNQbHVzUGxhbiI6dHJ1ZSwiaWF0IjoxNzc5MDE0NTk3LCJpc3MiOiJ1ZGFwaS1nYXRld2F5LXNlcnZpY2UiLCJleHAiOjE3NzkwNTUyMDB9.dO96bl3AtXlaKduwHj-sCLqwisMFI-bmgBBYSavsVy0"
 
 ws_url = f"wss://api.upstox.com/v2/feed/market-data-feed?access_token={access_token}"
 print(f"Connecting to WebSocket: {ws_url}")
