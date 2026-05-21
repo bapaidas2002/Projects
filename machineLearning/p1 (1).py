@@ -3,10 +3,10 @@ import requests
 import pandas as pd
 from datetime import date, datetime, timedelta
 
-ACCESS_TOKEN = "eyJ0eXAiOiJKV1QiLCJrZXlfaWQiOiJza192MS4wIiwiYWxnIjoiSFMyNTYifQ.eyJzdWIiOiI3NkI0VEYiLCJqdGkiOiI2YTA5OWJjNTY5YjlkYzU5MDk1ODg1Y2MiLCJpc011bHRpQ2xpZW50IjpmYWxzZSwiaXNQbHVzUGxhbiI6dHJ1ZSwiaWF0IjoxNzc5MDE0NTk3LCJpc3MiOiJ1ZGFwaS1nYXRld2F5LXNlcnZpY2UiLCJleHAiOjE3NzkwNTUyMDB9.dO96bl3AtXlaKduwHj-sCLqwisMFI-bmgBBYSavsVy0"
+ACCESS_TOKEN = "ifQ.eyJzdWIiOiI3NkI0VEYiLCJqdGkiOiI2YTBlOTJjOTIzY2QxODE1MzYzMGUwYjkiLCJpc011bHRpQ2xpZW50IjpmYWxzZSwiaXNQbHVzUGxhbiI6dHJ1ZSwiaWF0IjoxNzc5MzM5OTc3LCJpc3MiOiJ1ZGFwaS1nYXRld2F5LXNlcnZpY2UiLCJleHAiOjE3Nzk0MDA4MDB9.-af_YxmxDCHFU6Ruetbbj-a0BoYWTAEMKqzliuFOAic"
 INSTRUMENT = "NSE_INDEX|Nifty 50"
 TIMEFRAME = "1minute"
-OUTPUT_CSV = "nifty50_historical_6months.csv"
+OUTPUT_CSV = "nifty50_historical_12months_LATEST.csv"
 MAX_CHUNK_DAYS = 30
 
 headers = {
