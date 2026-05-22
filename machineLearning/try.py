@@ -1,110 +1,246 @@
-try:
-    import websocket
-except ImportError as exc:
-    raise ImportError(
-        "Missing dependency: install websocket-client with 'python -m pip install websocket-client'"
-    ) from exc
-
-import json
-import datetime
+# ============================================================
+# DOWNLOAD 1 YEAR NIFTY 50 5-MINUTE DATA USING UPSTOX API
+# ============================================================
+# This script:
+# 1. Downloads NIFTY 50 5-minute candle data
+# 2. Uses 3-month chunks to avoid API errors
+# 3. Combines all chunks into one dataframe
+# 4. Saves final dataset into CSV
+# ============================================================
+import websockets
+import requests
 import pandas as pd
+import time
 
+from datetime import datetime, timedelta
 
-# Use a valid Upstox access token. A placeholder token will return 401 Unauthorized.
-access_token = "YOUR_UPSTOX_ACCESS_TOKEN_HERE"
+# ============================================================
+# YOUR ACCESS TOKEN
+# ============================================================
 
-ws_url = f"wss://api.upstox.com/v2/feed/market-data-feed?access_token={access_token}"
+ACCESS_TOKEN = "eyJ0eXAiOiJKV1QiLCJrZXlfaWQiOiJza192MS4wIiwiYWxnIjoiSFMyNTYifQ.eyJzdWIiOiI3NkI0VEYiLCJqdGkiOiI2YTBlOWFkNWVlMjE3ZDc1NjJiMzZkM2QiLCJpc011bHRpQ2xpZW50IjpmYWxzZSwiaXNQbHVzUGxhbiI6dHJ1ZSwiaWF0IjoxNzc5MzQyMDM3LCJpc3MiOiJ1ZGFwaS1nYXRld2F5LXNlcnZpY2UiLCJleHAiOjE3Nzk0MDA4MDB9.1u3rRD9OUMlTag58WituWc-xMky76PE8XI4y0oVBVis"
 
-# Data storage
-tick_buffer = []
-current_minute = None
+# ============================================================
+# NIFTY 50 INSTRUMENT KEY
+# ============================================================
 
-# DataFrame to store final output
-df = pd.DataFrame(columns=['time','open','high','low','close','volume'])
+INSTRUMENT_KEY = "NSE_INDEX|Nifty 50"
 
+# ============================================================
+# API DETAILS
+# ============================================================
 
-def on_message(ws, message):
-    global tick_buffer, current_minute, df
+headers = {
+    "Accept": "application/json",
+    "Authorization": f"Bearer {ACCESS_TOKEN}"
+}
 
-    data = json.loads(message)
+# ============================================================
+# UPSTOX HISTORICAL API URL
+# ============================================================
+
+BASE_URL = "https://api.upstox.com/v2/historical-candle"
+
+# ============================================================
+# DATE RANGE
+# ============================================================
+
+end_date = datetime.now()
+
+start_date = end_date - timedelta(days=365)
+
+# ============================================================
+# SPLIT INTO 3-MONTH CHUNKS
+# ============================================================
+
+chunk_size_days = 90
+
+all_dataframes = []
+
+current_start = start_date
+
+# ============================================================
+# LOOP THROUGH CHUNKS
+# ============================================================
+
+while current_start < end_date:
+
+    current_end = min(
+        current_start + timedelta(days=chunk_size_days),
+        end_date
+    )
+
+    from_date = current_start.strftime("%Y-%m-%d")
+    to_date = current_end.strftime("%Y-%m-%d")
+
+    print("\n======================================")
+    print(f"Fetching: {from_date} -> {to_date}")
+    print("======================================")
+
+    # ========================================================
+    # API URL
+    # ========================================================
+
+    url = (
+        f"{BASE_URL}/"
+        f"{INSTRUMENT_KEY}/"
+        f"5minute/"
+        f"{to_date}/"
+        f"{from_date}"
+    )
 
     try:
-        tick = data['data'][0]   # extract tick
-        ltp = tick['ltp']
-        volume = tick.get('volume', 0)
 
-        now = datetime.datetime.now()
-        minute = now.replace(second=0, microsecond=0)
+        response = requests.get(
+            url,
+            headers=headers
+        )
 
-        if current_minute is None:
-            current_minute = minute
+        data = response.json()
 
-        # If new minute starts
-        if minute != current_minute:
-            process_minute_data(tick_buffer, current_minute)
-            tick_buffer = []
-            current_minute = minute
+        print("\nAPI STATUS:")
+        print(response.status_code)
 
-        tick_buffer.append((ltp, volume))
+        # ====================================================
+        # CHECK API RESPONSE
+        # ====================================================
+
+        if 'data' not in data:
+
+            print("\nNo data found.")
+            print(data)
+
+            current_start = current_end
+
+            continue
+
+        candles = data['data']['candles']
+
+        # ====================================================
+        # CREATE DATAFRAME
+        # ====================================================
+
+        df = pd.DataFrame(
+            candles,
+            columns=[
+                'Datetime',
+                'Open',
+                'High',
+                'Low',
+                'Close',
+                'Volume',
+                'OpenInterest'
+            ]
+        )
+
+        # ====================================================
+        # CONVERT DATETIME
+        # ====================================================
+
+        df['Datetime'] = pd.to_datetime(df['Datetime'])
+
+        # ====================================================
+        # SORT DATA
+        # ====================================================
+
+        df.sort_values(
+            by='Datetime',
+            inplace=True
+        )
+
+        print("\nRows fetched:", len(df))
+
+        # ====================================================
+        # STORE CHUNK
+        # ====================================================
+
+        all_dataframes.append(df)
+
+        # ====================================================
+        # WAIT TO AVOID RATE LIMIT
+        # ====================================================
+
+        time.sleep(1)
 
     except Exception as e:
-        print("Error:", e)
 
+        print("\nERROR:")
+        print(e)
 
-def process_minute_data(ticks, minute):
-    global df
+    # ========================================================
+    # NEXT CHUNK
+    # ========================================================
 
-    if not ticks:
-        return
+    current_start = current_end
 
-    prices = [t[0] for t in ticks]
-    volumes = [t[1] for t in ticks]
+# ============================================================
+# COMBINE ALL CHUNKS
+# ============================================================
 
-    o = prices[0]
-    h = max(prices)
-    l = min(prices)
-    c = prices[-1]
-    v = max(volumes)  # cumulative volume
+print("\n======================================")
+print("Combining all chunks...")
+print("======================================")
 
-    # Save to DataFrame
-    df.loc[len(df)] = [minute, o, h, l, c, v]
+final_df = pd.concat(
+    all_dataframes,
+    ignore_index=True
+)
 
-    print(f"\n📊 {minute}")
-    print(f"O:{o} H:{h} L:{l} C:{c} V:{v}")
+# ============================================================
+# REMOVE DUPLICATES
+# ============================================================
 
-    # Save to CSV (optional)
-    df.to_csv("nifty_1min_data.csv", index=False)
+final_df.drop_duplicates(
+    subset=['Datetime'],
+    inplace=True
+)
 
+# ============================================================
+# SORT FINAL DATA
+# ============================================================
 
-def on_open(ws):
-    print("✅ Connected")
+final_df.sort_values(
+    by='Datetime',
+    inplace=True
+)
 
-    subscribe_data = {
-        "guid": "abc123",
-        "method": "sub",
-        "data": {
-            "mode": "full",
-            "instrumentKeys": ["NSE_INDEX|Nifty 50"]
-        }
-    }
+# ============================================================
+# RESET INDEX
+# ============================================================
 
-    ws.send(json.dumps(subscribe_data))
+final_df.reset_index(
+    drop=True,
+    inplace=True
+)
 
+# ============================================================
+# SAVE TO CSV
+# ============================================================
 
-def on_error(ws, error):
-    print("❌ Error:", error)
+csv_filename = "NIFTY50_5MIN_1YEAR.csv"
 
+final_df.to_csv(
+    csv_filename,
+    index=False
+)
 
-def on_close(ws, close_status_code=None, close_msg=None):
-    print("🔌 Closed")
-    if close_status_code or close_msg:
-        print("Close status:", close_status_code, "message:", close_msg)
+# ============================================================
+# FINAL OUTPUT
+# ============================================================
 
+print("\n======================================")
+print("DOWNLOAD COMPLETED")
+print("======================================")
 
-ws = websocket.WebSocketApp(ws_url,
-                            on_open=on_open,
-                            on_message=on_message,
-                            on_error=on_error,
-                            on_close=on_close)
+print("\nTotal Rows:", len(final_df))
 
-ws.run_forever()
+print("\nCSV Saved As:")
+print(csv_filename)
+
+print("\nPreview:\n")
+
+print(final_df.head())
+
+print("\nLast Rows:\n")
+
+print(final_df.tail())
