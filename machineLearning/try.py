@@ -1,9 +1,17 @@
-import websocket
+try:
+    import websocket
+except ImportError as exc:
+    raise ImportError(
+        "Missing dependency: install websocket-client with 'python -m pip install websocket-client'"
+    ) from exc
+
 import json
 import datetime
 import pandas as pd
 
-access_token = "your_access_token"
+
+# Use a valid Upstox access token. A placeholder token will return 401 Unauthorized.
+access_token = "YOUR_UPSTOX_ACCESS_TOKEN_HERE"
 
 ws_url = f"wss://api.upstox.com/v2/feed/market-data-feed?access_token={access_token}"
 
@@ -87,8 +95,10 @@ def on_error(ws, error):
     print("❌ Error:", error)
 
 
-def on_close(ws):
+def on_close(ws, close_status_code=None, close_msg=None):
     print("🔌 Closed")
+    if close_status_code or close_msg:
+        print("Close status:", close_status_code, "message:", close_msg)
 
 
 ws = websocket.WebSocketApp(ws_url,
