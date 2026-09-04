@@ -1,0 +1,25 @@
+*{
+  padding: 0;
+  margin: 0;
+}
+#navbar{
+  height: 60px;
+  background: #0f1111;
+  display: flex;
+  flex-direction: row;
+  padding-top: 10px;
+}
+a{
+  color: aliceblue;
+}
+#logo{
+  color:#f08804;
+}
+button{
+  background:#f08804;
+  color: aliceblue;
+  margin-left: 10px;
+}
+a{
+  margin-right: 200px;
+}
