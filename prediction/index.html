@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Regression Predictor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="card">
+        <h2>Linear Regression Predictor</h2>
+        <p class="subtitle">Enter a value for <strong>X</strong> to calculate the predicted output <strong>Y</strong>.</p>
+        
+        <form id="predictionForm">
+            <div class="input-group">
+                <label for="xValue">Input (X):</label>
+                <input 
+                    type="number" 
+                    id="xValue" 
+                    placeholder="Enter x value (e.g., 50)" 
+                    step="any" 
+                    required
+                >
+            </div>
+            
+            <button type="submit" id="predictBtn">Predict Y</button>
+        </form>
+
+        <div id="resultBox" class="result-box hidden">
+            <h3>Prediction Result</h3>
+            <p><strong>Formula:</strong> <code>y = 1.0012 · x - 0.0966</code></p>
+            <div class="result-value">
+                <span>Predicted Y = </span>
+                <strong id="yOutput">0</strong>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</htm l>
