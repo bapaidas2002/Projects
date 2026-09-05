@@ -3,11 +3,20 @@
   margin: 0;
 }
 #navbar{
-  height: 60px;
+  height: 5vw;
   background: #0f1111;
+  padding-top: 10px;
+  display: inline;
+  width: 110vw;
   display: flex;
   flex-direction: row;
-  padding-top: 10px;
+}
+#navcontent{
+  margin-right: 100px;
+}
+#navsearch{
+  display: flex;
+
 }
 a{
   color: aliceblue;
@@ -21,5 +30,33 @@ button{
   margin-left: 10px;
 }
 a{
-  margin-right: 200px;
+  margin-right: 100px;
+}
+
+#row11{
+  background-color: bisque;
+  width: 20vw;
+  height: 20vw;
+  margin-right: 4vw;
+}
+#row1{
+  display: inline-block;
+  display: flex;
+  flex-direction: row;
+  position:absolute;
+  top: 5vw;
+  padding: 5vw;
+}
+img{
+  height: 18vw;
+  width: 18vw;
+  padding: 1vw;
+}
+#row2{
+  display: inline-block;
+  display: flex;
+  flex-direction: row;
+  position:absolute;
+  top: 30vw;
+  padding: 5vw;
 }
