@@ -7,12 +7,12 @@
   background: #0f1111;
   padding-top: 10px;
   display: inline;
-  width: 110vw;
+  width: 100vw;
   display: flex;
   flex-direction: row;
 }
 #navcontent{
-  margin-right: 100px;
+  margin-right: 10vw;
 }
 #navsearch{
   display: flex;
@@ -48,7 +48,7 @@ a{
   padding: 5vw;
 }
 img{
-  height: 18vw;
+  height: 15vw;
   width: 18vw;
   padding: 1vw;
 }
@@ -59,4 +59,11 @@ img{
   position:absolute;
   top: 30vw;
   padding: 5vw;
+}
+#ip{
+    color: #0f1111;
+}
+h2{
+    text-align: center;
+    text-size-adjust: inherit;
 }

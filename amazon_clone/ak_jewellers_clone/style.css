@@ -1,0 +1,89 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.container{
+    background: #000;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.loginBox{
+    height: 100%;
+    width: 100%;
+    background-color: aliceblue;
+    border-radius: 15px;
+    display: flex;
+    flex-direction:column;
+    align-items: center;
+}
+.logo{
+    margin-top: 10%;
+    
+    
+}
+h2{
+    text-align: center;
+    color: rgb(255, 0, 0,.9);
+}
+p{
+    margin-top: 3px;
+}
+.loginput{
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+}
+input{
+    height: 2vw ;
+    width: 30vw;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    
+}
+.login{
+    margin-top: 10px;
+    background-color:rgb(255, 0, 0,.9);
+    height: 2vw ;
+    width: 30vw;
+    border-radius: 4px;
+}
+.log{
+    text-align: center;
+}
+.or{
+    margin-top: 10px;
+}
+.google{
+    border: solid;
+    border-width: 1px;
+    height: 2vw ;
+    width: 30vw;
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+    align-items: center;
+}
+.googlepic{
+    height: 1.5vw;
+    margin-top: 3px;
+}
+.conti{
+    margin-left: 9vw;
+}
+.go{
+    text-align: center;
+}
+.google:hover{
+    background-color: aquamarine;
+
+}
+input:hover{
+    background-color: aquamarine;
+
+}
+.login:hover{
+    background-color: aquamarine;
+
+}
